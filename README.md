@@ -8,17 +8,21 @@ It runs silently, appending logs to a file for troubleshooting and purging the l
 
 ⚙️ **Requirements**
 
-Enable Color Filter Hotkey
+**Enable Color Filter Hotkey**
 
-**To check your Color Filter Settings
-**Ctrl+R to open the Run Tool
+To check your Color Filter Settings
+
+Ctrl+R to open the Run Tool
+
 Input: ms-settings:easeofaccess-colorfilter to open the setting page
+
 Then ensure the shortcut key is enabled
+
 _You should also enable the color filter and select Grayscale, or whatever Filter you want applied when toggled. You can turn it off right after._
 
-**AutoHotkey Version: v1.1+
-**This script was written for AutoHotkey v1.1 (ANSI or Unicode).
-Do not use AutoHotkey v2—it is not compatible.
+**AutoHotkey Version: v1.1+**
+
+This script was written for AutoHotkey v1.1 (ANSI or Unicode). Do not use AutoHotkey v2—it is not compatible.
 
 Download AutoHotkey v1.1 here:
 https://www.autohotkey.com/download/ahk-install.exe
