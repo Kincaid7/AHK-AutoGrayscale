@@ -76,10 +76,13 @@ Configure for: Windows 10/11
 
 Go to the Triggers tab → Click New...
 
-Begin the task: On On Logon
+Begin the task: At Logon
 
-Begin the task: At Unlock
+Click New Again...
 
+Begin the task: At Workstation Unlock
+
+_Ensure enabled is checked_
 
 ⚙️ **Step 3: Add an Action**
 
