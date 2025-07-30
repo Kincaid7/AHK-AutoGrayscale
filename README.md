@@ -35,9 +35,14 @@ global DayStartHour := 8       ; Grayscale OFF during this period
 
 global NightStartHour := 17    ; Grayscale ON after this hour
 
+global LoopTime := 1 * 60000 ; Minutes between loops
+
 DayStartHour: The hour (24h format) when grayscale should turn off.
 
 NightStartHour: The hour (24h format) when grayscale should turn on.
+
+LoopTime: The amount of minutes you want before looping
+
 
 Example:
 
@@ -71,23 +76,10 @@ Configure for: Windows 10/11
 
 Go to the Triggers tab → Click New...
 
-Begin the task: On a schedule
+Begin the task: On On Logon
 
-Settings:
+Begin the task: At Unlock
 
-Daily
-
-Start date: today’s date
-
-Start time: something near current time
-
-Repeat task every: 5 minutes (Your call)
-
-For a duration of: Indefinitely
-
-Ensure Enabled is checked → Click OK
-
-You can also add additional triggers like at log on or on workstation unlock.
 
 ⚙️ **Step 3: Add an Action**
 
