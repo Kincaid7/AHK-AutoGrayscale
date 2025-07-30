@@ -2,7 +2,7 @@
 
 📜 **Overview**
 
-This AHK script, when leveraged with Task Scheduler, automatically toggles Windows grayscale mode ON at night and OFF during the day, based on your defined hours. It is designed to discourage late-night PC usage by keeping grayscale on unless it's your configured daytime hours.
+This AHK script, when leveraged with Task Scheduler, automatically toggles Windows grayscale mode (color filter) ON at night and OFF during the day, based on your defined hours. It is designed to discourage late-night PC usage by keeping grayscale on unless it's your configured daytime hours.
 
 It runs silently, appending logs to a file for troubleshooting and purging the log if it exceeds 5MB.
 
