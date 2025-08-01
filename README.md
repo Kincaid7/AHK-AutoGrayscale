@@ -1,124 +1,119 @@
-**README — Grayscale Toggle Auto Enforcement Script**
+# HesychiaHex — PC Discipline & Grayscale-Lock Suite
 
-📜 **Overview**
+## 📜 Overview
+HesychiaHex is an **AutoHotkey v1** toolkit that
 
-This AHK script, when leveraged with Task Scheduler, automatically toggles Windows grayscale mode (color filter) ON at night and OFF during the day, based on your defined hours. It is designed to discourage late-night PC usage by keeping grayscale on unless it's your configured daytime hours.
+* Toggles **Windows Color-Filter → Grayscale** **ON** at night and **OFF** during the day.  
+* Optionally **locks** the workstation during a configurable “lock window.”  
+* Contains modular anti-tampering tools by blocking Task Manager, Task Scheduler, CMD, PowerShell, the script’s own folder, and Windows Settings when grayscale is active (unless a configurable bypass USB is inserted).  
+* Can **mute system volume** during grayscale hours.  
+* Stores all settings in `config.ini` and logs events to `log.txt` (auto-pruned at 5 MB).
 
-It runs silently, appending logs to a file for troubleshooting and purging the log if it exceeds 5MB.
+Use Task Scheduler so it restarts at logon / unlock. Great for late-night deterrence, parental control, study focus, or digital asceticism.
 
-⚙️ **Requirements**
+---
 
-**Enable Color Filter Hotkey**
+## ⚙️ Requirements
+1. **Enable Windows color-filter hotkey**  
+   * `Win + R` → `ms-settings:easeofaccess-colorfilter`  
+   * Turn on **Shortcut key**.  
+   * Choose **Grayscale** (or any filter you prefer).  
 
-To check your Color Filter Settings
+2. **AutoHotkey v1.1 (ANSI or Unicode)**  
+   * *Do not* use v2.  
+   * Download: <https://www.autohotkey.com/download/ahk-install.exe>
 
-Ctrl+R to open the Run Tool
+---
 
-Input: ms-settings:easeofaccess-colorfilter to open the setting page
+## 🛠 Configuration
 
-Then ensure the shortcut key is enabled
+Two key files:
 
-_You should also enable the color filter and select Grayscale, or whatever Filter you want applied when toggled. You can turn it off right after._
+| File | Purpose |
+|------|---------|
+| **`HesychiaHex.ahk`** | main enforcement script |
+| **`HesychiaHex_ConfigEditor.ahk`** | GUI editor that writes `config.ini` |
 
-**AutoHotkey Version: v1.1+**
+Run the **config-editor** after download and whenever you want to reconfigure the parameters of the script. These settings are saved into `config.ini`. 
 
-This script was written for AutoHotkey v1.1 (ANSI or Unicode). Do not use AutoHotkey v2—it is not compatible.
+💡 **NOTE:** To set up a USB bypass key for disabling anti-tampering and lockout features:
 
-Download AutoHotkey v1.1 here:
-https://www.autohotkey.com/download/ahk-install.exe
+1. Plug in your USB drive **before** opening the configuration editor.
+2. In the dropdown menu, select the USB drive you want to use.
+3. When you click **Save**, the script records that drive’s serial number to the config file.
 
-🛠 **Configuration**
-
-Open the script in any text editor. The configurable section is at the top:
-
-global DayStartHour := 8       ; Grayscale OFF during this period
-
-global NightStartHour := 17    ; Grayscale ON after this hour
-
-global LoopTime := 1 * 60000 ; Minutes between loops
-
-DayStartHour: The hour (24h format) when grayscale should turn off.
-
-NightStartHour: The hour (24h format) when grayscale should turn on.
-
-LoopTime: The amount of minutes you want before looping
-
-
-Example:
-
-8 means 8:00 AM
-
-17 means 5:00 PM
-
-The log file is stored in the same folder as the script and is automatically reset if it exceeds 5MB.
-
-🕒 **How to Set Up the Script with Task Scheduler**
-
-To ensure the script runs automatically every 5 minutes only when you're logged in, follow these steps:
-
-✅ **Step 1: Create a Task**
-
-Open Task Scheduler
-
-Click “Create Task”
-
-On the General tab:
-
-Name: Anything (Grayscale Toggle)
-
-Check: Run only when user is logged on
-
-Check: Run with highest privileges
-
-Configure for: Windows 10/11
-
-🔁 **Step 2: Add a Trigger**
-
-Go to the Triggers tab → Click New...
-
-Begin the task: At Logon
-
-Click New Again...
-
-Begin the task: At Workstation Unlock
-
-_Ensure enabled is checked_
-
-⚙️ **Step 3: Add an Action**
-
-Go to the Actions tab → Click New...
-
-Action: Start a program
-
-Program/script:
-Browse to your installed AutoHotkey.exe
-(e.g., C:\Program Files\AutoHotkey\AutoHotkey.exe)
-
-Add arguments (replace with your script path):
-"C:\Path\To\AutoGrayscale.ahk"
-
-Click OK
-
-🧹 **Step 4: Additionaol Task Options**
-
-If you tested with “basic tasks,” go back and delete them to avoid conflicts.
-
-Under the Conditions Tab, uncheck all boxes, including Start the task only if the computer is on AC power if using a laptop
-
-Under settings, ensure that If the task is already running behavior is set to "Stop the existing instance"
+From then on, plugging in that USB acts as a **physical override key**:
+- Tamper protection and lockouts will be disabled.
+- Grayscale and audio muting (if enabled) will still apply.
+- You can relaunch the config editor freely to adjust your settings at any time.
 
 
-📓 **Logging**
+```ini
+[Schedule]
+DayStartHour   = 6     ; grayscale OFF from 06:00
+NightStartHour = 22    ; grayscale ON after 22:00
+LockStartHour  = 23    ; workstation locks at 23:00
+LockEndHour    = 4     ; unlock window ends at 04:00
+LoopTime       = 6000  ; ms between loops (6000 ms = 0.1 min)
 
-A file named log.txt will be created in the same folder.
+[Override]
+Enabled = 1
+Serial  = 12345678    ; USB serial that bypasses locks / blocks
 
-Every script run appends a timestamped entry.
+[TamperPrevention]
+BlockTaskManager          = 1
+BlockTaskScheduler        = 1
+BlockCmd                  = 1
+BlockPowerShell           = 1
+BlockScriptFolderWindows  = 1
+BlockSettings             = 1
 
-If the file exceeds 5MB, it is deleted automatically and started fresh.
+[Audio]
+MuteDuringGrayscale = 1
+```
+* `LoopTime` is stored in **milliseconds**; the GUI shows exact decimal **minutes** (e.g. `0.1`).
+---
 
-📴 **Usage Tip**
+## 🕒 Task Scheduler Setup
 
-You can still toggle grayscale manually via Ctrl + Win + C (Windows hotkey).
-However, this script will re-toggle according to your Task Scheduler settings to keep you accountable.
+### Step 1 — Create Task
+**General tab**  
+- **Name**: `HesychiaHex`  
+- **Run only when user is logged on**  
+- **Run with highest privileges**
 
-If you encounter permission issues, try running the script or Task Scheduler as Administrator.
+### Step 2 — Triggers
+- **At logon**  
+- **At workstation unlock**  
+  - *(Ensure both are enabled)*
+
+### Step 3 — Action
+- **Start a program** →  
+  - **Program**: `C:\Program Files\AutoHotkey\AutoHotkey.exe`  
+  - **Add arguments**: `"C:\Path\To\HesychiaHex.ahk"`
+
+### Step 4 — Settings
+- **Conditions tab** → *uncheck everything*  
+- **Settings tab** →  
+  - “If the task is already running” → **Stop the existing instance**
+
+---
+
+## 📓 Logging
+A file called `log.txt` (in the same folder) records every toggle, lock, or tamper event.  
+If it exceeds **5 MB**, it is automatically purged and reset.
+
+---
+
+## 📴 Usage Tips
+- **Emergency**: Boot into **Safe Mode**, then edit `config.ini` using the config-editor
+- Manual grayscale toggle: **Ctrl + Win + C**  
+  *(The script will re-toggle on next loop.)*
+- If a tamper block triggers incorrectly, plug in your **override USB** or update `config.ini` using the config-editor
+
+---
+
+## 🙏 Name Meaning
+**Hesychia** (ἡσυχία) = Stillness / Disciplined Quiet  
+**Hex** = The “spell” enforcing it  
+Stay focused. Tame the machine.
