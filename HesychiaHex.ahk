@@ -132,7 +132,6 @@ ToggleGrayscale() {
             ; Ensure MUTE during nighttime
             if (MuteDuringGrayscale) {
                 SoundGet, isMuted,, mute
-                Log("Mute check result: [" . isMuted . "]")
 
                 ; Normalize string to numeric
                 if (isMuted = "On" || isMuted = 1 || isMuted = "1") {
