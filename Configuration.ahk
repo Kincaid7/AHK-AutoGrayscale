@@ -43,6 +43,7 @@ IniRead, BlockTaskScheduler, config.ini, TamperPrevention, BlockTaskScheduler, 0
 IniRead, BlockCmd, config.ini, TamperPrevention, BlockCmd, 0
 IniRead, BlockPowerShell, config.ini, TamperPrevention, BlockPowerShell, 0
 IniRead, BlockScriptFolderWindows, config.ini, TamperPrevention, BlockScriptFolderWindows, 0
+IniRead, BlockSettings, config.ini, TamperPrevention, BlockSettings, 0
 IniRead, MuteDuringGrayscale, config.ini, Audio, MuteDuringGrayscale, 0
 
 LoopTime := Round(LoopTimeMS / 60000)
@@ -121,6 +122,7 @@ Gui, Add, Checkbox, vBlockTaskScheduler Checked%BlockTaskScheduler%, Task Schedu
 Gui, Add, Checkbox, vBlockCmd Checked%BlockCmd%, CMD
 Gui, Add, Checkbox, vBlockPowerShell Checked%BlockPowerShell%, PowerShell
 Gui, Add, Checkbox, vBlockScriptFolderWindows Checked%BlockScriptFolderWindows%, Script Folder
+Gui, Add, Checkbox, vBlockSettings Checked%BlockSettings%, Windows Settings
 
 Gui, Add, Button, Default Center gSaveConfig, Save Config
 Gui, Show,, Edit HesychiaHex Config
@@ -177,6 +179,7 @@ IniWrite, %BlockTaskScheduler%, config.ini, TamperPrevention, BlockTaskScheduler
 IniWrite, %BlockCmd%, config.ini, TamperPrevention, BlockCmd
 IniWrite, %BlockPowerShell%, config.ini, TamperPrevention, BlockPowerShell
 IniWrite, %BlockScriptFolderWindows%, config.ini, TamperPrevention, BlockScriptFolderWindows
+IniWrite, %BlockSettings%, config.ini, TamperPrevention, BlockSettings
 IniWrite, %MuteDuringGrayscale%, config.ini, Audio, MuteDuringGrayscale
 
 ; === PROMPT USER TO LOCK WORKSTATION OR NOT ===

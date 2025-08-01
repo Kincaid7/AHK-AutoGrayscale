@@ -32,6 +32,7 @@ IniRead, BlockTaskScheduler,     config.ini, TamperPrevention, BlockTaskSchedule
 IniRead, BlockCmd,               config.ini, TamperPrevention, BlockCmd, 0
 IniRead, BlockPowerShell,        config.ini, TamperPrevention, BlockPowerShell, 0
 IniRead, BlockScriptFolderWindows, config.ini, TamperPrevention, BlockScriptFolderWindows, 0
+IniRead, BlockSettings, config.ini, TamperPrevention, BlockSettings, 0
 
 ; Override config (USB serial match)
 IniRead, OverrideEnabled, config.ini, Override, Enabled, 1
@@ -71,7 +72,7 @@ ShouldOverride() {
                     lastOverrideDrive := drive
                     Log("Override USB detected in drive " . drive)
                     Sleep, 200
-                    MsgBox, 64, HesychiaHex Override Activated, HesychiaHex.ahk Override USB detected in drive %drive% `nAnti-Tamper controls and Lockdown disabled until removal.
+                    MsgBox, 64, HesychiaHex, HesychiaHex.ahk Override USB detected in drive %drive% `nAnti-Tamper controls and Lockdown disabled until removal.
                 }
                 return true
             }
@@ -82,7 +83,7 @@ ShouldOverride() {
     if (lastOverrideDrive != "") {
         lastOverrideDrive := ""
         Log("Override USB no longer detected.")
-        MsgBox, 48, Override Removed, Override USB has been removed.`nTamper controls are active again.
+        MsgBox, 48, HesychiaHex, HesychiaHex.ahk Override USB has been removed.`nTamper controls and Lockdown period are enabled again.
     }
 
     return false
@@ -170,7 +171,7 @@ SendGrayscaleToggle() {
 }
 
 HandleTampering() {
-    global BlockTaskManager, BlockTaskScheduler, BlockCmd, BlockPowerShell, BlockScriptFolderWindows, DayStartHour, NightStartHour
+    global BlockTaskManager, BlockTaskScheduler, BlockCmd, BlockPowerShell, BlockScriptFolderWindows, BlockSettings, DayStartHour, NightStartHour
 
     FormatTime, currentHour,, H
     currentHour := currentHour + 0  ; ensure numeric
@@ -185,27 +186,46 @@ HandleTampering() {
 
         if (BlockTaskManager && WinExist("ahk_exe Taskmgr.exe")) {
             WinClose
-            MsgBox, 48, Access Denied, Viewing the Task Manager during grayscale hours without USB override is restricted. See Config File.
+            MsgBox, 48, HesychiaHex, Access Denied. Viewing the Task Manager during grayscale hours without USB override is restricted. See Config File.  In case of emergency, reboot PC in safe mode and edit configuration.
             Log("Tamper attempt: Task Manager closed.")
         }
 
         if (BlockTaskScheduler && WinExist("Task Scheduler")) {
             WinClose
-            MsgBox, 48, Access Denied, Viewing the Task Scheduler during grayscale hours without USB override is restricted. See Config File.
+            MsgBox, 48, HesychiaHex, Access Denied. Viewing the Task Scheduler during grayscale hours without USB override is restricted. See Config File.  In case of emergency, reboot PC in safe mode and edit configuration.
             Log("Tamper attempt: Task Scheduler closed.")
         }
 
         if (BlockCmd && WinExist("ahk_exe cmd.exe")) {
             WinClose
-            MsgBox, 48, Access Denied, Viewing the Command Prompt during grayscale hours without USB override is restricted. See Config File.
+            MsgBox, 48, HesychiaHex, Access Denied. Viewing the Command Prompt during grayscale hours without USB override is restricted. See Config File.  In case of emergency, reboot PC in safe mode and edit configuration.
             Log("Tamper attempt: Command Prompt closed.")
         }
 
         if (BlockPowerShell && WinExist("Windows PowerShell")) {
             WinClose
-            MsgBox, 48, Access Denied, Viewing the Powershell during grayscale hours without USB override is restricted. See Config File.
+            MsgBox, 48, Access Denied, Viewing the Powershell during grayscale hours without USB override is restricted. See Config File.  In case of emergency, reboot PC in safe mode and edit configuration.
             Log("Tamper attempt: PowerShell closed.")
         }
+
+	if (BlockSettings && WinExist("Settings ahk_exe ApplicationFrameHost.exe")) {
+	    WinClose
+	    MsgBox, 48, HesychiaHex, Access Denied.`nModern Settings app is restricted during grayscale hours.`nUse USB override or Safe Mode to bypass.
+	    Log("Tamper attempt: Modern Settings window closed.")
+	}
+	
+	if (BlockSettings && WinExist("Date and Time ahk_exe rundll32.exe")) {
+	    WinClose
+	    MsgBox, 48, HesychiaHex, Access Denied.`nDate and Time control panel is restricted during grayscale hours.`nUse USB override or Safe Mode to bypass.
+	    Log("Tamper attempt: Date and Time panel closed.")
+	}
+
+	if (BlockSettings && WinExist("Region ahk_exe rundll32.exe")) {
+	    WinClose
+	    MsgBox, 48, HesychiaHex, Access Denied.`nRegion control panel is restricted during grayscale hours.`nUse USB override or Safe Mode to bypass.
+	    Log("Tamper attempt: Region panel closed.")
+	}
+
 
         if (BlockScriptFolderWindows) {
             for window in ComObjCreate("Shell.Application").Windows {
@@ -213,7 +233,7 @@ HandleTampering() {
                     folder := window.Document.Folder.Self.Path
                     if (InStr(folder, A_ScriptDir)) {
                         WinClose, % "ahk_id " . window.HWND
-                        MsgBox, 48, Access Denied, Viewing the Script Directory during grayscale hours without USB override is restricted. See Config File.
+                        MsgBox, 48, HesychiaHex, Access Denied. Viewing the Script Directory during grayscale hours without USB override is restricted. See Config File.  In case of emergency, reboot PC in safe mode and edit configuration.
                         Log("Tamper attempt: Explorer window showing script directory closed.")
                     }
                 } catch e {
