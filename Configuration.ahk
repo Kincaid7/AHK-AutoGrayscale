@@ -46,31 +46,36 @@ IniRead, BlockScriptFolderWindows, config.ini, TamperPrevention, BlockScriptFold
 IniRead, BlockSettings, config.ini, TamperPrevention, BlockSettings, 0
 IniRead, MuteDuringGrayscale, config.ini, Audio, MuteDuringGrayscale, 0
 
-LoopTime := Round(LoopTimeMS / 60000)
+; convert ms to minutes but keep any decimal (e.g. 6000 = 0.1)
+LoopTime := LoopTimeMS / 60000
+; prepare a nicely-formatted string for the Edit box (up to 3 decimals)
+; keep up to three decimals
+LoopTimeDisplay := Format("{:.3f}", LoopTime)
+; strip trailing zeros and a dangling decimal point
+LoopTimeDisplay := RegExReplace(LoopTimeDisplay, "0+$|\.0+$", "")
+
+
 
 HourList(selected) {
     list := ""
-    firstSet := false
+    selected += 0  ; force numeric
+
     Loop, 24 {
         val := A_Index - 1
         display := (val = 0) ? "12 AM"
                 : (val < 12) ? val . " AM"
                 : (val = 12) ? "12 PM"
                 : (val - 12) . " PM"
-        
-        if (val = selected && val != 0 && !firstSet) {
-            list .= display . "||"
-            firstSet := true
-        } else if (val = selected && val = 0 && !firstSet) {
-            list .= display . "||"
-            firstSet := true
-        } else {
-            list .= display . "|"
-        }
-    }
-    return RTrim(list, "|")
-}
 
+        list .= (val = selected ? display . "||" : display) . "|"
+    }
+
+    ; remove only the very last "|" (if present)
+    if (SubStr(list, -1) = "|")
+        list := SubStr(list, 1, -1)
+
+    return list
+}
 
 ; === CREATE THE CONFIGURATION EDITOR WINDOW ===
 Gui, Add, Text,, === Grayscale Settings ===
@@ -83,7 +88,7 @@ Gui, Add, DropDownList, vNightStartHour w100, % HourList(NightStartHour)
 Gui, Add, Checkbox, vMuteDuringGrayscale Checked%MuteDuringGrayscale%, Mute During Grayscale
 
 Gui, Add, Text,, Grayscale Toggle Loop Time (minutes):
-Gui, Add, Edit, vLoopTime w100, %LoopTime%
+Gui, Add, Edit, vLoopTime w100, %LoopTimeDisplay%
 
 Gui, Add, Text,, === Lockdown Settings ===
 Gui, Add, Text,, Lock Start Hour:
