@@ -23,6 +23,12 @@ Use Task Scheduler so it restarts at logon / unlock. Great for late-night deterr
    * *Do not* use v2.  
    * Download: <https://www.autohotkey.com/download/ahk-install.exe>
 
+3. **Task Scheduler Setup**  
+   * Pretty essential to ensuring script continually runs and allowing config-editor changes to run smoothly.
+
+4. **First Time Setup**  
+   * Plug in a USB if you want have it as a backup override key
+   * Run the config-editor to adjust the parameters of the program to your liking
 ---
 
 ## 🛠 Configuration
