@@ -116,27 +116,22 @@ ToggleGrayscale() {
         currentHour := hour + 0  ; ensure numeric
         colorActive := (active = 1)
 
-        ; === DAYTIME: Grayscale should be OFF ===
-        if ((currentHour >= DayStartHour && currentHour < NightStartHour) && colorActive) {
-            Log("Daytime: Grayscale is ON. Toggling OFF.")
-            SendGrayscaleToggle()
-        }
-
-        ; === NIGHTTIME: Grayscale should be ON ===
-        else {
+        ; === EXPLICIT TIME LOGIC ===
+        if (currentHour >= DayStartHour && currentHour < NightStartHour) {
+            if (colorActive) {
+                Log("Daytime: Grayscale is ON. Toggling OFF.")
+                SendGrayscaleToggle()
+            }
+        } else {
             if (!colorActive) {
                 Log("Nighttime: Grayscale is OFF. Toggling ON.")
                 SendGrayscaleToggle()
             }
 
-            ; Ensure MUTE during nighttime
+            ; === NIGHTTIME MUTING ===
             if (MuteDuringGrayscale) {
                 SoundGet, isMuted,, mute
-
-                ; Normalize string to numeric
-                if (isMuted = "On" || isMuted = 1 || isMuted = "1") {
-                    ; Already muted, do nothing
-                } else {
+                if (isMuted != 1) {
                     SoundSet, 1,, mute
                     Log("System muted during nighttime.")
                 }
@@ -157,7 +152,6 @@ ToggleGrayscale() {
         DllCall("LockWorkStation")
     }
 }
-
 
 
 ; === FUNCTION: SEND GRAYSCALE TOGGLE HOTKEY ===
