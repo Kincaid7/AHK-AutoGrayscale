@@ -71,7 +71,7 @@ ShouldOverride() {
                 if (lastOverrideDrive != drive) {
                     lastOverrideDrive := drive
                     Log("Override USB detected in drive " . drive)
-                    Sleep, 200
+                    Sleep, 400
                     MsgBox, 64, HesychiaHex, HesychiaHex.ahk Override USB detected in drive %drive% `nAnti-Tamper controls and Lockdown disabled until removal.
                 }
                 return true
@@ -155,13 +155,14 @@ ToggleGrayscale() {
 
 
 ; === FUNCTION: SEND GRAYSCALE TOGGLE HOTKEY ===
+
 SendGrayscaleToggle() {
-    SetKeyDelay, 50, 50
-    Send, ^#c
+    SendInput, ^#c
     Sleep, 500
     RegRead, postActive, HKEY_CURRENT_USER\Software\Microsoft\ColorFiltering, Active
     Log("Post-toggle filter status: " . (postActive = 1 ? "ON" : "OFF"))
 }
+
 
 HandleTampering() {
     global BlockTaskManager, BlockTaskScheduler, BlockCmd, BlockPowerShell, BlockScriptFolderWindows, BlockSettings, DayStartHour, NightStartHour
